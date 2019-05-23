@@ -1,0 +1,30 @@
+.rectangle-div {
+    display: inline-block;
+    padding: 8px;
+    margin-top: 8px;
+}
+
+
+hr {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.map-responsive{
+    overflow:hidden;
+    padding-bottom:56.25%;
+    position:relative;
+    height:0;
+}
+.map-responsive iframe{
+    left:0;
+    top:0;
+    height:100%;
+    width:100vh;
+    position:absolute;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
