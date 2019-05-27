@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "proyek-pwa"
+  },
+  "targets": {
+    "proyek-pwa": {
+      "hosting": {
+        "championleague": [
+          "championleague"
+        ]
+      }
+    }
+  }
+}

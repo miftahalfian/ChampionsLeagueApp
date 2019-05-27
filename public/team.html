@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Champions League App</title>
+        <link rel="manifest" href="/manifest.json">
+        <meta name="description" content="Champions League App"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#283593" />
+        <link rel="stylesheet" href="css/materialize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="js/materialize.min.js"></script>
+    </head>
+    <body>
+        <!-- Navigasi -->
+        <nav class="indigo darken-3" role="navigation">
+            <div class="nav-wrapper container">
+                <a href="#" class="brand-logo" id="logo-container">News Reader</a>
+                <a href="javascript:history.back()" class="sidenav-trigger" data-target="nav-mobile">
+                    <i class="material-icons">arrow_back</i>
+                </a>
+                <ul class="topnav right hide-on-med-and-down"></ul>
+                <ul class="sidenav" id="nav-mobile"></ul>
+            </div>
+        </nav>
+        <!-- Akhir Navigasi -->
+        <div class="container" id="body-content">
+            <div class="preloader-wrapper small active center-align" id="progress" style="margin: auto;">
+                <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                <div class="circle"></div>
+                </div><div class="gap-patch">
+                <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                <div class="circle"></div>
+                </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="row valign-wrapper">
+                        <div class="col s0 m0 l3 hide-on-med-and-down"></div>
+                        <div class="col s4 l2" id="team_badge"></div>
+                        <div class="col s8 l4" id="team_detail" style="text-overflow: ellipsis"></div>
+                        <div class="col s0 m0 l3 hide-on-med-and-down"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Competitions</span>
+                    <div class="row" id="competitions">
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Players</span>
+                    <div class="row" id="players">
+                    </div>
+                </div>
+            </div>
+            <div class="fixed-action-btn">
+                <a class="btn-floating btn-large red" id="save">
+                    <i class="large material-icons">favorite_border</i>
+                </a>
+            </div>
+        </div>
+        <script src="js/api.js"></script>
+        <script src="js/idb.js"></script>
+        <script src="js/db.js"></script>
+        <script src="js/main.js"></script>
+        <script>
+            if ("serviceWorker" in navigator) {
+                registerServiceWorker();
+                requestPermission();
+            } else {
+                console.log("ServiceWorker belum didukung browser ini.");
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var id = urlParams.get("id");
+
+                checkFavorite(id).then(function(result) {
+                    var isSaved = result;
+
+                    console.log("isSaved? " + isSaved)
+
+                    if (isSaved) var item = getSavedTeamById();
+                    else var item = loadTeamById();
+
+                    console.log(item);
+
+                    var save = document.getElementById("save");
+
+                    if (isSaved) save.innerHTML = `<i class="large material-icons">favorite</i>`;
+                    else save.innerHTML = `<i class="large material-icons">favorite_border</i>`;
+
+                    save.onclick = function() {
+                        console.log("Tombol FAB di klik.");
+                        isSaved = !isSaved;
+
+                        if (isSaved) {
+                            item.then(function(team) {
+                                console.log(team);
+                                saveForLater(team);
+                                save.innerHTML = `<i class="large material-icons">favorite</i>`;
+                            });
+                        }
+                        else {
+                            item.then(function(team) {
+                                deleteByID(team.id).then(function() {
+                                    save.innerHTML = `<i class="large material-icons">favorite_border</i>`;
+                                });
+                            });
+                        }
+                    };
+                });
+            });
+        </script>
+    </body>
+</html>
